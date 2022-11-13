@@ -1,6 +1,6 @@
 # save the current working directory, which is also
 # where the directory has been pulled down to
-cwd=$(pwd)
+cwd=$( dirname -- "$( readlink -f -- "$0"; )"; )
 
 cd ~
 
