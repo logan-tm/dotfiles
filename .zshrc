@@ -1,4 +1,4 @@
 DOTS=~/github/dotfiles
 source $DOTS/alias.zsh
-source $DOTS/antigen.zsh
+source ~/antigen.zsh
 antigen init $DOTS/.antigenrc
