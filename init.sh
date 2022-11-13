@@ -12,3 +12,4 @@ curl -L git.io/antigen > .antigen.zsh
 
 echo "Sourcing .zshrc file from $cwd..."
 source "$cwd/.zshrc"
+echo "Initialization complete."
