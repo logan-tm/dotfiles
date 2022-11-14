@@ -11,5 +11,11 @@ echo "Installing antigen..."
 curl -L git.io/antigen > .antigen.zsh
 
 echo "Sourcing .zshrc file from $cwd..."
-source "$cwd/.zshrc"
+echo "source $cwd/.zshrc" > ~/.zshrc
+
+# will be optional in the future: install nvm with init
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+
+source ~/.zshrc
 echo "Initialization complete."
+cd $cwd
