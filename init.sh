@@ -9,6 +9,17 @@ nvm_install='$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/inst
 
 cd ~
 
+# ===== Get flags for optional installs
+while getopts "anp" arg; do
+    case $arg in
+        a) install_all=true;;
+        n) install_nvm=true;;
+        p) install_py=true;;
+    esac
+done
+
+# ===== INSTALLATIONS
+
 # ===== zsh
 # preferred shell
 if (( ! $+commands[zsh] )); then
@@ -34,15 +45,33 @@ else echo "Starship found."; fi
 
 # ===== nvm
 # used for node.js
-if [ ! -d ~/.nvm ]; then
-    echo "Nvm not found. Installing nvm..."
-    eval $nvm_install
-else echo "Nvm found."; fi
+if [ $install_all ] || [ $install_nvm ]; then
+    if [ ! -d ~/.nvm ]; then
+        echo "Nvm not found. Installing nvm..."
+        eval $nvm_install
+    else echo "Nvm found."; fi
+fi
 
+# ===== python
 # TODO: install Python
+if [ $install_all ] || [ $install_py ]; then
+    echo "Python not yet supported. Coming soon!"
+fi
 
-source $cwd/.zshrc
-eval $(starship init zsh)
+# ===== INSTALLATIONS COMPLETE
+
+
+# ===== create .zshrc file
+# save the original as a backup if it exists and
+# have all "important" source commands put there
+if [ -f ~/.zshrc ]; then
+    echo "Overwriting the .zshrc file. Saving existing file as ~/.zshrc_backup..."
+    mv ~/.zshrc ~/.zshrc_backup
+else echo "Creating new .zshrc file..."; fi
+
+echo "source $cwd/.zshrc" > ~/.zshrc
+echo "source $cwd/alias.zsh" >> ~/.zshrc
+echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
 echo "Initialization complete."
 cd $origin
