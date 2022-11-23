@@ -4,19 +4,28 @@ origin=$pwd
 cwd=$( dirname -- "$( readlink -f -- "$0"; )"; )
 zsh_install='$(sudo apt-get install -y zsh)'
 antigen_install='$(curl -L git.io/antigen > .antigen.zsh)'
-starship_install='$(curl -sS https://starship.rs/install.sh | sh)'
 nvm_install='$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash)'
 
 cd ~
 
 # ===== Get flags for optional installs
-while getopts "anp" arg; do
+while getopts "an" arg; do
     case $arg in
         a) install_all=true;;
         n) install_nvm=true;;
-        p) install_py=true;;
     esac
 done
+
+
+# ===== starship
+# Check to see if starship was installed
+# as a separate step
+if (( ! $+commands[starship] )); then
+    echo "Starship not found. Please install starship with the following command:"
+    echo "curl -sS https://starship.rs/install.sh | sh"
+    exit 0
+fi
+
 
 # ===== INSTALLATIONS
 
@@ -34,13 +43,6 @@ if [ ! -f ~/antigen.zsh ] && [ ! -f ~/.antigen.zsh ]; then
     eval $antigen_install
 fi
 
-# ===== starship
-# used for custom theming
-if (( ! $+commands[starship] )); then
-    echo "Starship not found. Installing starship..."
-    eval $starship_install
-fi
-
 # ===== nvm
 # used for node.js
 if [ $install_all ] || [ $install_nvm ]; then
@@ -48,12 +50,6 @@ if [ $install_all ] || [ $install_nvm ]; then
         echo "Nvm not found. Installing nvm..."
         eval $nvm_install
     else echo "Nvm already found. Skipping install..."; fi
-fi
-
-# ===== python
-# TODO: install Python
-if [ $install_all ] || [ $install_py ]; then
-    echo "Python not yet supported. Coming soon!"
 fi
 
 # ===== INSTALLATIONS COMPLETE
@@ -71,5 +67,5 @@ echo "source $cwd/.zshrc" > ~/.zshrc
 echo "source $cwd/alias.zsh" >> ~/.zshrc
 echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
-echo "Initialization complete."
+echo "Initialization complete. Please source ~/.zshrc to finish setup."
 cd $origin
