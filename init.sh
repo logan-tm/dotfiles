@@ -25,8 +25,6 @@ done
 if (( ! $+commands[zsh] )); then
     echo "Zsh not found. Installing zsh..."
     eval $zsh_install
-else
-    echo "Zsh found."
 fi
 
 # ===== antigen
@@ -34,14 +32,14 @@ fi
 if [ ! -f ~/antigen.zsh ] && [ ! -f ~/.antigen.zsh ]; then
     echo "Antigen not found. Installing in location '~/.antigen.zsh'..."
     eval $antigen_install
-else echo "Antigen found."; fi
+fi
 
 # ===== starship
 # used for custom theming
 if (( ! $+commands[starship] )); then
     echo "Starship not found. Installing starship..."
     eval $starship_install
-else echo "Starship found."; fi
+fi
 
 # ===== nvm
 # used for node.js
@@ -49,7 +47,7 @@ if [ $install_all ] || [ $install_nvm ]; then
     if [ ! -d ~/.nvm ]; then
         echo "Nvm not found. Installing nvm..."
         eval $nvm_install
-    else echo "Nvm found."; fi
+    else echo "Nvm already found. Skipping install..."; fi
 fi
 
 # ===== python

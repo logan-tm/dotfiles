@@ -1,9 +1,12 @@
 # ~/.config/starship.toml
 
-right_format = """$time"""
+format = """
+$username$all
+"""
+right_format = """$git_metrics$time"""
 
 [username]
-format = "[$user]($style) "
+format = "[$user](bright-green) [|](white) "
 show_always = true
 style_user = "bright-green"
 
@@ -18,6 +21,17 @@ min_time = 5_000
 show_milliseconds = false
 format = "[$duration]($style) "
 style = "bright-green"
+
+[git_status]
+ahead = "⇡${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+behind = "⇣${count}"
+up_to_date = "✓"
+format = "[$ahead_behind](bright-green) [$all_status](bright-red)"
+ 
+[git_metrics]
+format = "[+$added]($added_style)/[-$deleted]($deleted_style) "
+disabled=false
 
 [aws]
 symbol = "  "
