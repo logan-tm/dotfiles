@@ -5,6 +5,8 @@ cwd=$( dirname -- "$( readlink -f -- "$0"; )"; )
 zsh_install='$(sudo apt-get install -y zsh)'
 antigen_install='$(curl -L git.io/antigen > .antigen.zsh)'
 nvm_install='$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash)'
+vim_plug_install=`$(curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim)`
 
 cd ~
 
@@ -50,6 +52,12 @@ if [ $install_all ] || [ $install_nvm ]; then
         echo "Nvm not found. Installing nvm..."
         eval $nvm_install
     else echo "Nvm already found. Skipping install..."; fi
+fi
+
+# ===== vim plug manager
+# used for vim
+if [ ! -f ~/.vim/autoload/plug.vim ]; then
+    eval $vim_plug_install
 fi
 
 # ===== INSTALLATIONS COMPLETE
