@@ -54,15 +54,24 @@ set number
 set laststatus=2
 
 " Set the default color scheme
-colo space-vim-dark
+" colo space-vim-dark
 
 " Set gui colors by default
 set termguicolors
 
-" Call the .vimrc.plug file
-if filereadable(expand("~/.vimrc.plug"))
-    source ~/.vimrc.plug
-endif
+call plug#begin('~/.vim/plugged')
+
+Plug 'liuchengxu/space-vim-dark'
+Plug 'preservim/nerdtree'
+
+call plug#end()
+
+" ===================================
+" NOTE: May need to call :PlugInstall within vim to get the following options
+" ===================================
+
+" Set the default color scheme
+colo space-vim-dark
 
 " Start NERDTree when Vim is started without file arguments.
 autocmd StdinReadPre * let s:std_in=1
