@@ -53,9 +53,6 @@ set number
 " Status bar
 set laststatus=2
 
-" Set the default color scheme
-" colo space-vim-dark
-
 " Set gui colors by default
 set termguicolors
 
