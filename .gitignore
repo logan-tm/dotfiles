@@ -1,2 +1,4 @@
 *.zwc
 *.swp
+.antigen.zsh
+.antigenrc.zwc
