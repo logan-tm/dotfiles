@@ -1,4 +1,4 @@
-DOTS=~/github/dotfiles
+DOTS=$( dirname -- "$( readlink -f -- "$0"; )"; )
 
 # Set up custom aliases
 source $DOTS/alias.zsh
