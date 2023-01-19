@@ -1,9 +1,10 @@
 # ~/.config/starship.toml
 
 format = """
-$username$hostname [|](bright-black) $directory$git_branch [|](bright-black)$all
+$username$hostname [|](bright-black) $directory$git_branch$git_status [|](bright-black) $all
 """
 right_format = """$git_metrics$time"""
+
 
 [username]
 format = "[$user](bright-green)"
@@ -40,7 +41,7 @@ style = "bright-green"
 ahead = "⇡${count}"
 diverged = "⇕⇡${ahead_count}⇣${behind_count}"
 behind = "⇣${count}"
-up_to_date = "✓"
+up_to_date = " ✓"
 modified = "[\\(\\)](yellow)"
 staged = "[\\(+\\)](bright-green)"
 format = "[$ahead_behind](bright-green) $all_status"
