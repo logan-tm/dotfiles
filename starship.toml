@@ -1,17 +1,31 @@
 # ~/.config/starship.toml
 
 format = """
-$username$all
+$username$hostname [|](bright-black) $directory$git_branch [|](bright-black)$all
 """
 right_format = """$git_metrics$time"""
 
 [username]
-format = "[$user](bright-green) [|](white) "
+format = "[$user](bright-green)"
 show_always = true
 style_user = "bright-green"
 
+[hostname] 
+format = '[@$hostname](bright-black)'
+ssh_only = false
+disabled = false
+
+[directory]
+format = '[$path](bold yellow)'
+read_only = " "
+
+[git_branch]
+symbol = "\\[\\]"
+format = " on [$symbol$branch(:$remote_branch)]($style)"
+style = "bold purple"
+
 [time]
-format = '[\[$time\]]($style) '
+format = '[\[$time\]]($style)'
 use_12hr = true
 disabled = false
 style = "white"
@@ -50,9 +64,6 @@ symbol = " "
 [dart]
 symbol = " "
 
-[directory]
-read_only = " "
-
 [docker_context]
 symbol = " "
 
@@ -61,9 +72,6 @@ symbol = " "
 
 [elm]
 symbol = " "
-
-[git_branch]
-symbol = " "
 
 [golang]
 symbol = " "
