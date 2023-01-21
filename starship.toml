@@ -1,7 +1,7 @@
 # ~/.config/starship.toml
 
 format = """
-$username$hostname [|](bright-black) $gcloud $directory$git_branch$git_status [|](bright-black) $all
+$username$hostname $gcloud[|](bright-black) $directory$git_branch$git_status [|](bright-black) $all
 """
 right_format = """$git_metrics$time"""
 
@@ -11,7 +11,7 @@ format = "[$user](bright-green)"
 show_always = true
 style_user = "bright-green"
 
-[hostname] 
+[hostname]
 format = '[@$hostname](bright-black)'
 ssh_only = false
 disabled = false
@@ -45,17 +45,18 @@ up_to_date = " ✓"
 modified = " [\\(\\)](yellow)"
 staged = " [\\(+\\)](bright-green)"
 format = "[$ahead_behind](bright-green)$all_status"
- 
+
 [git_metrics]
 format = "[+$added]($added_style)/[-$deleted]($deleted_style) "
-disabled=false
+disabled = false
 
 [gcloud]
-format = "[$symbol$account](bright-blue) [|](bright-black)"
+format = "[$symbol](bright-blue)"
 symbol = " "
 
 [aws]
-symbol = "  "
+format = "[$symbol](#ffa400)"
+symbol = " "
 
 [buf]
 symbol = " "
