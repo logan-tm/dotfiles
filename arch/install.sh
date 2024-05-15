@@ -4,8 +4,9 @@
 # Link to his work: https://gitlab.com/stephan-raabe/dotfiles
 
 version=$(cat .version/name)
-source .install/includes/colors.sh
-source .install/includes/library.sh
+export DOTFILES_INSTALL_LOCATION="/home/$USER/.dotfiles"
+source .install/util/colors.sh
+source .install/util/functions.sh
 clear
 
 # Set installation mode
@@ -30,6 +31,7 @@ echo -e "${NONE}"
 
 echo "Version: $version"
 echo "original by Stephan Raabe 2024"
+echo "edited and used here by Logan Michalicek 2024 (personal use)"
 echo ""
 if [ -d ~/.dotfiles ] ;then
     echo "A dotfiles installation has been detected."
@@ -38,53 +40,53 @@ else
     echo "This script will guide you through the installation process of your dotfiles."
 fi
 echo ""
-source .install/required.sh
-source .install/confirm-start.sh
-source .install/yay.sh
-source .install/updatesystem.sh
-source .install/backup.sh
-source .install/preparation.sh
-source .install/installer.sh
-source .install/remove.sh
-source .install/general.sh
-source .install/packages/general-packages.sh
-source .install/install-packages.sh
-source .install/profile.sh
+source .install/scripts/required.sh
+source .install/scripts/confirm-start.sh
+# source .install/scripts/yay.sh
+# source .install/scripts/updatesystem.sh
+# source .install/scripts/backup.sh
+# source .install/scripts/preparation.sh
+# source .install/scripts/installer.sh
+# source .install/scripts/remove.sh
+# source .install/scripts/general.sh
+# source .install/scripts/packages/general-packages.sh
+# source .install/scripts/install-packages.sh
+# source .install/scripts/profile.sh
 if [[ $profile == *"Hyprland"* ]]; then
     echo -e "${GREEN}"
     figlet "Hyprland"
     echo -e "${NONE}"
-    source .install/packages/hyprland-packages.sh
-    source .install/install-packages.sh
+    source .packages/hyprland.sh
+    # source .install/scripts/install-packages.sh
 fi
 if [[ $profile == *"Qtile"* ]]; then
     echo -e "${GREEN}"
     figlet "Qtile"
     echo -e "${NONE}"
-    source .install/packages/qtile-packages.sh
-    source .install/install-packages.sh
+    source .packages/qtile-packages.sh
+    # source .install/scripts/install-packages.sh
 fi
-source .install/wallpaper.sh
-source .install/displaymanager.sh
-source .install/issue.sh
-source .install/restore.sh
-source .install/neovim.sh
-source .install/keyboard.sh
-source .install/hook.sh
-source .install/vm.sh
-source .install/copy.sh
-source .install/init-pywal.sh
+# source .install/scripts/wallpaper.sh
+# source .install/scripts/displaymanager.sh
+# source .install/scripts/issue.sh
+# source .install/scripts/restore.sh
+# source .install/scripts/neovim.sh
+# source .install/scripts/keyboard.sh
+# source .install/scripts/hook.sh
+# source .install/scripts/vm.sh
+# source .install/scripts/copy.sh
+# source .install/scripts/init-pywal.sh
 if [[ $profile == *"Hyprland"* ]]; then
-    source .install/hyprland-dotfiles.sh
+    # source .install/scripts/hyprland-dotfiles.sh
 fi
 if [[ $profile == *"Qtile"* ]]; then
-    source .install/qtile-dotfiles.sh
+    # source .install/scripts/qtile-dotfiles.sh
 fi
-source .install/settings.sh
-source .install/apps.sh
-source .install/gtk.sh
-source .install/bashrc.sh
-source .install/cleanup.sh
-source .install/diagnosis.sh
-source .install/reboot.sh
+# source .install/scripts/settings.sh
+# source .install/scripts/apps.sh
+# source .install/scripts/gtk.sh
+# source .install/scripts/bashrc.sh
+# source .install/scripts/cleanup.sh
+# source .install/scripts/diagnosis.sh
+# source .install/scripts/reboot.sh
 sleep 3

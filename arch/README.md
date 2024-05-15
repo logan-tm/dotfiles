@@ -12,8 +12,10 @@ The original code and inspiration for this repository comes from Stephan Raabe's
 
 ## Usage
 
+USE AT YOUR OWN RISK. These scripts/files are for my own use, and I cannot guarantee it will work on your machine.
+
 To use these dotfiles, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Navigate to the cloned repository.
-3. Run the installation script to set up the dotfiles.
+3. Run the installation script based on your distribution to set up the dotfiles.

@@ -1,0 +1,20 @@
+packagesPacman=(
+    "hyprland"
+    "hyprpaper"
+    "xdg-desktop-portal-hyprland" 
+    "waybar" 
+    "grim" 
+    "slurp"
+    "swappy"
+    "cliphist"
+    "hyprlock"
+    "hypridle"
+);
+
+packagesYay=(
+    "swww" 
+    "wlogout"
+    "nwg-look"
+    "emote"
+    "eww"
+);
