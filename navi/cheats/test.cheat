@@ -1,0 +1,4 @@
+; % test, sandbox
+
+; # Test command
+; echo "column1 column2|columnB1 columnB2" | tr '|' '\n' | awk '{print $2}'

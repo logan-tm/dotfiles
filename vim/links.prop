@@ -1,0 +1,4 @@
+$DOTFILES/vim/themes/spring-night.vim=$HOME/.vim/colors/spring-night.vim
+$DOTFILES/vim/themes/walnut-grove.vim=$HOME/.vim/colors/walnut-grove.vim
+$DOTFILES/vim/themes/phoenix.vim=$HOME/.vim/colors/phoenix.vim
+$DOTFILES/vim/rc.vim=$HOME/.vimrc

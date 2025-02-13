@@ -1,0 +1,13 @@
+% aws, ec2
+@ aws, common
+
+# List ec2 instances
+; Gets the queried info, formats it, then makes a crude table.
+; An empty response means there are no instances to show
+aws --profile <aws_profile> ec2 describe-instances --no-cli-pager --output text \
+--query "Reservations[*].Instances[*].[InstanceId,InstanceType,Tags[?Key=='Name'].Value,State.Name]" | \
+; Formatting. Replace '\t' with ':', join every other line with ':', then make a table with ':' as separator.
+; This way, spaces are preserved.
+sed -E -e 's/\t/:/g' | \
+paste -s -d':\n' | \
+column -t -s ":" -N "ID,Type,Status,Name"

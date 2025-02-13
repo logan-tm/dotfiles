@@ -1,0 +1,6 @@
+% aws, common
+
+# Testing aws
+; tac reverses the order so that "default" is the first selection.
+; this may no longer work if another profile is added that starts with a-d.
+$ aws_profile: aws configure list-profiles | tac

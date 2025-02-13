@@ -1,0 +1,8 @@
+% aws, dynamodb
+@ aws, common
+
+# List tables
+aws --profile <aws_profile> dynamodb list-tables --no-cli-pager --output text | awk '{print $2}' 
+
+# Search table names
+aws --profile <aws_profile> dynamodb list-tables --no-cli-pager --output text | awk '{print $2}' | fzf

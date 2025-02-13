@@ -1,0 +1,5 @@
+bat
+eza
+yazi-fm
+yazi-cli
+zellij
