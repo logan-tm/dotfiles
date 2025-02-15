@@ -20,5 +20,6 @@ alias ltl='() { eza --icons --group-directories-first -1 --tree --git-ignore --l
 ###################################
 
 # Fzf my command history, then place result in the command line
-alias fzh="print -z \$(history | sed -re 's/ *[0-9]* *//' | fzf --tac --no-sort)"
+# alias fzh="print -z \$(history | sed -re 's/ *[0-9]* *//' | fzf --tac --no-sort)"
+# With fzf installed, use CTRL + r for this functionality
 

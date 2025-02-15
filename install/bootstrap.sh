@@ -188,9 +188,9 @@ install_cargo() {
   fi
 }
 
-install_cargo_packages() {
+# install_cargo_packages() {
 
-}
+# }
 
 setup_aws_cli() {
     info "Installing AWS CLI"
@@ -208,7 +208,7 @@ setup_apt_packages
 # setup_vim
 setup_antigen
 install_cargo
-install_cargo_packages
+# install_cargo_packages
 # setup_aws_cli
 
 echo ''

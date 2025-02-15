@@ -13,3 +13,4 @@ x11-xkb-utils
 python3-pip
 silversearcher-ag
 zsh-antigen
+fd-find

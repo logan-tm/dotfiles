@@ -3,3 +3,4 @@ eza
 yazi-fm
 yazi-cli
 zellij
+navi
