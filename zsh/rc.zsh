@@ -14,10 +14,10 @@ plugins=(git docker ssh-agent zsh-autosuggestions zsh-syntax-highlighting jsonto
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 source_if_exists () {
-	if test -r "$src"; then
-		source "$src"
+	if test -r "$1"; then
+		source "$1"
 	else
-		echo "Can't source $src"
+		echo "Can't source $1"
 	fi
 }
 

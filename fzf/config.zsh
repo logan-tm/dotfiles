@@ -23,7 +23,7 @@
 # cyan="#2CF9ED"
 
 # export FZF_DEFAULT_OPTS="--color=fg:${fg},bg:${bg},hl:${purple},fg+:${fg},bg+:${bg_highlight},hl+:${purple},info:${blue},prompt:${cyan},pointer:${cyan},marker:${cyan},spinner:${cyan},header:${cyan}"
-export FZF_DEFAULT_OPTS="-e --height=50% --tmux=50% --layout=reverse --info=inline --border --margin=1 --padding=1"
+export FZF_DEFAULT_OPTS="-e --height=50% --tmux=50% --layout=reverse --info=inline --border --margin=1 --padding=1 --preview-window 75%,wrap"
 
 # -- Use fd instead of fzf --
 
@@ -75,7 +75,7 @@ _fzf_comprun() {
     cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
     export|unset) fzf --preview "eval 'echo \${}'"          "$@" ;;
     git)          fzf --preview "eval 'tldr $command {}'"   "$@" ;;
-    aws)          fzf --preview-window 75%,wrap --preview "eval 'tldr $command {}'"   "$@" ;;
+    aws)          fzf --preview "eval 'tldr $command {}'"   "$@" ;;
     ssh)          fzf --preview 'dig {}'                    "$@" ;;
     *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
   esac
