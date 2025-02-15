@@ -1,7 +1,10 @@
-colorscheme phoenix
+set background=dark
+colorscheme hyrule
 
 " Disable compatibility with vi which can cause unexpected issues.
 set nocompatible
+
+set termguicolors
 
 " Enable type file detection. Vim will be able to try to detect the type of file in use.
 filetype on
@@ -77,3 +80,6 @@ call plug#begin('~/.vim/plugged')
 call plug#end()
 
 " }}}
+
+hi! Normal ctermbg=NONE guibg=NONE
+hi! EndOfBuffer ctermbg=NONE guibg=NONE
