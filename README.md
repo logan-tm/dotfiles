@@ -6,7 +6,7 @@
 
 - zsh
 - nvim (basic usage, not a power user)
-- starship: terminal styling
+- starship: terminal style
 - navi: terminal cheat sheet tool
 - yazi: terminal file explorer
 
