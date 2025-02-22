@@ -53,13 +53,16 @@ _fzf_complete_git() {
 
 _fzf_complete_aws() {
   _fzf_complete -- "$@" < <(
+    # aws help headers contain a bunch of \b and duplicate characters for formatting, for some reason.
     aws help | tr -d '\b' | sed -n '/SSEERRVVIICCEESS/,/SSEEEE/p' | sed -r '/^\s*$/d' | sed '1d;$d' | awk '{print $2}'
   )
 }
 
 # source ~/fzf-git.sh/fzf-git.sh
 
-show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi"
+show_dir="eza --tree --color=always {} | head -200"
+show_file="bat -n --color=always --line-range :500 {}"
+show_file_or_dir_preview="if [ -d {} ]; then $show_dir; else $show_file; fi"
 
 export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
@@ -72,10 +75,10 @@ _fzf_comprun() {
   shift
 
   case "$command" in
-    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    cd)           fzf --preview "$show_dir"                 "$@" ;;
     export|unset) fzf --preview "eval 'echo \${}'"          "$@" ;;
     git)          fzf --preview "eval 'tldr $command {}'"   "$@" ;;
-    aws)          fzf --preview "eval 'tldr $command {}'"   "$@" ;;
+    aws)          fzf --preview-label " tldr '$command {}' " --preview "eval 'tldr $command {}'"   "$@" ;;
     ssh)          fzf --preview 'dig {}'                    "$@" ;;
     *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
   esac

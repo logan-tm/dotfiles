@@ -7,7 +7,8 @@
 # Cheat sheets!
 ###################################
 
-alias n="navi"
-alias nq="navi --query"
-alias ncode="code ~/.local/share/navi/cheats"
+# Swapped for a zsh bindkey (CTRL + n)
+# alias n="navi"
+# alias nq="navi --query"
+# alias ncode="code ~/.local/share/navi/cheats"
 

@@ -1,3 +1,4 @@
 fzf
 tlrc
 ripgrep
+navi

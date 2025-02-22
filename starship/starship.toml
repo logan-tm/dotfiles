@@ -1,41 +1,35 @@
 # ~/.config/starship.toml
 
-format = """
-$username$hostname $gcloud[|](bright-black) $directory$git_branch$git_status [|](bright-black) $all
-"""
-right_format = """$git_metrics$time"""
+# [|](bright-black)
 
+# format = """$username$hostname $gcloud[|](bright-black) $directory$git_branch$git_status [|](bright-black) $all"""
+format = """$directory$python$node\n$character"""
+# right_format = """$git_metrics$time""" <= with time
+right_format = """$git_metrics $git_branch$git_status"""
 
-[username]
-format = "[$user](bright-green)"
-show_always = true
-style_user = "bright-green"
+# add_newline = true
 
-[hostname]
-format = '[@$hostname](bright-black)'
-ssh_only = false
-disabled = false
+[character]
+
+# [username]
+# format = "[$user](bright-green)"
+# show_always = true
+# style_user = "bright-green"
+
+# [hostname]
+# format = '[@$hostname](bright-black)'
+# ssh_only = false
+# disabled = false
 
 [directory]
-format = '[$path](bold yellow)'
+format = '[$path](bright-blue)'
+# format = '[$path](bold yellow)'
 read_only = " "
 
 [git_branch]
 symbol = "\\[\\]"
-format = " on [$symbol$branch(:$remote_branch)]($style)"
+format = "[$symbol$branch(:$remote_branch)]($style)"
 style = "bold purple"
-
-[time]
-format = '[\[$time\]]($style)'
-use_12hr = true
-disabled = false
-style = "white"
-
-[cmd_duration]
-min_time = 5_000
-show_milliseconds = false
-format = "[$duration]($style) "
-style = "bright-green"
 
 [git_status]
 ahead = "⇡${count}"
@@ -47,8 +41,21 @@ staged = " [\\(+\\)](bright-green)"
 format = "[$ahead_behind](bright-green)$all_status"
 
 [git_metrics]
-format = "[+$added]($added_style)/[-$deleted]($deleted_style) "
+format = "[+$added]($added_style)/[-$deleted]($deleted_style)"
 disabled = false
+only_nonzero_diffs = true
+
+# [time]
+# format = '[\[$time\]]($style)'
+# use_12hr = true
+# disabled = false
+# style = "white"
+
+[cmd_duration]
+min_time = 5_000
+show_milliseconds = false
+format = "[$duration]($style) "
+style = "bright-green"
 
 [gcloud]
 format = "[$symbol](bright-blue)"
@@ -57,6 +64,7 @@ symbol = " "
 [aws]
 format = "[$symbol](#ffa400)"
 symbol = " "
+disabled = true
 
 [buf]
 symbol = " "
@@ -114,9 +122,11 @@ symbol = " "
 
 [package]
 symbol = " "
+disabled = true
 
 [python]
 symbol = " "
+format = ' [|](bright-black) [${symbol}${pyenv_prefix}(${version})]($style) [(\($virtualenv\) )](cyan)'
 
 [rlang]
 symbol = "ﳒ "
