@@ -11,6 +11,8 @@ echo ''
 
 source "$DOTFILES/install/util.sh"
 
+# UTILS ==========================
+
 link_file () {
   local src=$1 dst=$2
 
@@ -90,7 +92,6 @@ link_file () {
   fi
 }
 
-
 prop () {
    PROP_KEY=$1
    PROP_FILE=$2
@@ -98,11 +99,12 @@ prop () {
    echo $PROP_VALUE
 }
 
+# LINK FILES AND CREATE ENV FILE
+
 install_dotfiles () {
-  info 'Checking dotfiles...'
+  # info 'Checking dotfiles...'
 
   local overwrite_all=false backup_all=false skip_all=false
-
   find -H "$DOTFILES" -maxdepth 2 -name 'links.prop' -not -path '*.git*' | while read linkfile; do
     for line in $(cat "$linkfile"); do
       local src dst dir
@@ -114,19 +116,43 @@ install_dotfiles () {
       link_file "$src" "$dst"
     done
   done
+  success "Linked dotfiles"
 }
 
 create_env_file () {
-  info "Checking for .env.sh file..."
     if test -f "$HOME/.env.sh"; then
-        skip "Env file already exists ($HOME/.env.sh)"
+        skip "Env file exists ($HOME/.env.sh)"
     else
         echo "export DOTFILES=$DOTFILES" > $HOME/.env.sh
         success 'Created ~/.env.sh'
     fi
 }
 
-setup_apt_packages() {
+# CHECK FOR AND INSTALL PACKAGE INSTALLERS
+
+install_cargo() {
+  if [ -z "$(which rustc)" ]; then
+    info "Rust/Cargo not found. Installing rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    success "Installed rust"
+  else
+    skip "Rust/Cargo found"
+  fi
+}
+
+install_brew() {
+  if [ ! -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+    info "Brew not found. Installing brew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    success "Installed brew"
+  else
+    skip "Brew found"
+  fi
+}
+
+# INSTALL PACKAGES
+
+install_apt_packages() {
   # Install tools
   info "Checking apt packages..."
   local total_count=0
@@ -148,16 +174,45 @@ setup_apt_packages() {
   # success "Packages installed"
 }
 
-setup_antigen() {
-  ANTIGEN_ZSH="$DOTFILES/antigen/antigen.zsh"
+install_brew_packages() {
+  # Install tools
+  info "Checking brew packages..."
+  local total_count=0
+  local installed_count=0
 
-  if [ ! -f "$ANTIGEN_ZSH" ]; then
-    info "Setting up antigen..."
-    curl -L git.io/antigen > "$ANTIGEN_ZSH"
-    success "Installed antigen"
-  else
-    skip "Antigen found"
-  fi
+  # TODO: If no deps file, skip this step
+  find "$DOTFILES/install" -name 'deps-brew.txt' | while read depsfile; do
+    for package in $(cat "$depsfile"); do
+      if ! /home/linuxbrew/.linuxbrew/bin/brew list $1 &>/dev/null; then
+          /home/linuxbrew/.linuxbrew/bin/brew install $package
+          success "$package installed"
+      else
+          skip "Already installed $package"
+      fi
+    done
+  done
+
+
+  # success "Packages installed"
+}
+
+install_cargo_packages() {
+  # Install tools
+  info "Checking cargo packages..."
+  local total_count=0
+  local installed_count=0
+
+  # TODO: If no deps file, skip this step
+  find "$DOTFILES/install" -name 'deps-cargo.txt' | while read depsfile; do
+    for package in $(cat "$depsfile"); do
+      if ! cargo install --list | grep "$package v" > /dev/null 2>&1 ; then
+          cargo install $package
+          success "$package installed"
+      else
+          skip "Already installed $package"
+      fi
+    done
+  done
 }
 
 setup_vim () {
@@ -179,36 +234,16 @@ setup_vim () {
   success 'Vim customization complete'
 }
 
-install_cargo() {
-  info "Checking for rust..."
-  if [ -z "$(which rustc)" ]; then
-    info "Not found. Installing rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    success "Installed rust"
-  fi
-}
-
-# install_cargo_packages() {
-
-# }
-
-setup_aws_cli() {
-    info "Installing AWS CLI"
-    cd /tmp
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" &> /dev/null
-    unzip -qq -o awscliv2.zip
-    sudo ./aws/install --update
-    #rm -rf /tmp/awscliv2.zip /tmp/aws
-    pip3 install -U cfn-lint
-}
-
 install_dotfiles
 create_env_file
-setup_apt_packages
 # setup_vim
 setup_antigen
 install_cargo
-# install_cargo_packages
+install_brew
+
+install_apt_packages
+install_brew_packages
+install_cargo_packages
 # setup_aws_cli
 
 echo ''

@@ -23,8 +23,7 @@ setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
 
-# plugins setup (may move to antigen)
-plugins=(git docker ssh-agent zsh-autosuggestions zsh-syntax-highlighting jsontools)
+plugins=(git docker ssh-agent zsh-autosuggestions fast-syntax-highlighting jsontools)
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 source_if_exists () {
@@ -35,35 +34,16 @@ source_if_exists () {
 	fi
 }
 
-source_if_exists $HOME/.local/bin/env
+# source_if_exists $HOME/.local/bin/env
 source_if_exists $HOME/.env.sh # Sets $DOTFILES and other env variables
-source_if_exists $DOTFILES/antigen/antigen.zsh
-source_if_exists $DOTFILES/antigen/.antigenrc >/dev/null
-source_if_exists $DOTFILES/brew/install.zsh
-
-# configs (eventually replace this with function that scans dotfiles for 'config.zsh')
 source_if_exists $DOTFILES/zsh/util.zsh
 for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
 	# source_if_exists $file
 	source_if_exists $file
 done
-# source_if_exists $DOTFILES/bat/config.zsh
-# source_if_exists $DOTFILES/fzf/config.zsh
-# source_if_exists $DOTFILES/navi/config.zsh
-# source_if_exists $DOTFILES/nvm/config.zsh
-# source_if_exists $DOTFILES/yazi/config.zsh
 
 export ZSH="$HOME/.oh-my-zsh"
-# ZSH_THEME="powerlevel10k/powerlevel10k"
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 source_if_exists $ZSH/oh-my-zsh.sh
-
-
-# For running cargo commands
-# . $HOME/.cargo/env
-
-
-
 
 export EDITOR=vim
 VISUAL="$EDITOR"
@@ -75,8 +55,8 @@ VISUAL="$EDITOR"
 autoload -Uz compinit; compinit
 # compdef _flyctl fly
 
-export WIN_HOME="/mnt/c/Users/logan"
-export ANDROID_HOME="$WIN_HOME/AppData/Local/Android/Sdk"
+# export WIN_HOME="/mnt/c/Users/logan"
+# export ANDROID_HOME="$WIN_HOME/AppData/Local/Android/Sdk"
 
 autoload -U +X bashcompinit && bashcompinit
 # complete -o nospace -C /usr/bin/terraform terraform
@@ -89,4 +69,4 @@ autoload -U +X bashcompinit && bashcompinit
 eval "$(starship init zsh)"
 source_if_exists $DOTFILES/zsh/aliases/index.zsh
 eval "$(fzf --zsh)"
-. "$HOME/.local/bin/env"
+# . "$HOME/.local/bin/env"

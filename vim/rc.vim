@@ -1,5 +1,5 @@
 set background=dark
-colorscheme hyrule
+colorscheme spring-night
 
 " Disable compatibility with vi which can cause unexpected issues.
 set nocompatible

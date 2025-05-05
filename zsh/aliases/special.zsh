@@ -3,6 +3,6 @@
 # ============================================================================================
 # INTERTRU SPECIFIC ALIASES
 # Note: change this to use the first aws profile that contains the string "intertru"
-alias iaws="aws --profile intertru-logantm"
-alias icdk="cdk --profile intertru-logantm"
+# alias iaws="aws --profile intertru-logantm"
+# alias icdk="cdk --profile intertru-logantm"
 # ============================================================================================
