@@ -48,25 +48,11 @@ source_if_exists $ZSH/oh-my-zsh.sh
 export EDITOR=vim
 VISUAL="$EDITOR"
 
-# export FLYCTL_INSTALL="/home/logan/.fly"
-# export PATH="$FLYCTL_INSTALL/bin:$PATH"
-
-# fpath+=(~/.config/hcloud/completion/zsh)
 autoload -Uz compinit; compinit
-# compdef _flyctl fly
-
-# export WIN_HOME="/mnt/c/Users/logan"
-# export ANDROID_HOME="$WIN_HOME/AppData/Local/Android/Sdk"
 
 autoload -U +X bashcompinit && bashcompinit
-# complete -o nospace -C /usr/bin/terraform terraform
 
-
-
-# for i in {0..255}; do print -Pn %K{$i} %k%F{$i}${(l:3::0:)i}%f  ${${(M)$((i%6)):#3}:+\\n}; done
-
-# Added to the bottom of this file due to bindkey issues.
 eval "$(starship init zsh)"
 source_if_exists $DOTFILES/zsh/aliases/index.zsh
 eval "$(fzf --zsh)"
-# . "$HOME/.local/bin/env"
+
