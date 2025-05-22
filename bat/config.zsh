@@ -1,1 +1,1 @@
-export BAT_THEME=hyrule_contrast
+# export BAT_THEME=hyrule_contrast

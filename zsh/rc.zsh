@@ -14,17 +14,7 @@
 #   fi  
 # done
 
-# history setup
-HISTFILE=$HOME/.zhistory
-SAVEHIST=1000
-HISTSIZE=999
-setopt share_history 
-setopt hist_expire_dups_first
-setopt hist_ignore_dups
-setopt hist_verify
-
-plugins=(git docker ssh-agent zsh-autosuggestions fast-syntax-highlighting jsontools)
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+XDG_CONFIG_HOME="/home/lm/.config"
 
 source_if_exists () {
 	if test -r "$1"; then
@@ -34,25 +24,72 @@ source_if_exists () {
 	fi
 }
 
-# source_if_exists $HOME/.local/bin/env
-source_if_exists $HOME/.env.sh # Sets $DOTFILES and other env variables
-source_if_exists $DOTFILES/zsh/util.zsh
-for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
-	# source_if_exists $file
-	source_if_exists $file
-done
+source_if_exists $HOME/.env.sh # Sets $DOTFILES, $ZSH_DEBUG and other env variables
+source_if_exists $DOTFILES/util/print.sh
 
-export ZSH="$HOME/.oh-my-zsh"
-source_if_exists $ZSH/oh-my-zsh.sh
+local debug=$ZSH_DEBUG
+(($debug > 0)) && info "Debug mode enabled (can disable in ~/.env.sh)"
+
+# history setup
+
+HISTFILE=$HOME/.zhistory
+SAVEHIST=1000
+HISTSIZE=999
+setopt share_history 
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_verify
+
+plugins=(git docker ssh-agent zsh-autosuggestions fast-syntax-highlighting jsontools)
 
 export EDITOR=vim
 VISUAL="$EDITOR"
 
+# ===============================================================================
+
+(($debug > 0)) && info "Starting brew"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+(($debug > 0)) && clear_last && success "Brew started"
+
+# ===============================================================================
+
+(($debug > 0)) && info "Sourcing configs"
+source_if_exists $DOTFILES/zsh/util.zsh
+for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
+	source_if_exists $file
+done
+(($debug > 0)) && clear_last && success "Sourced configs"
+
+# ===============================================================================
+
+(($debug > 0)) && info "Sourcing oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
+source_if_exists $ZSH/oh-my-zsh.sh
+(($debug > 0)) && clear_last && success "Sourced oh-my-zsh"
+
+# ===============================================================================
+
+(($debug > 0)) && info "Loading compinit"
 autoload -Uz compinit; compinit
-
 autoload -U +X bashcompinit && bashcompinit
+(($debug > 0)) && clear_last && success "Loaded compinit"
 
+# ===============================================================================
+
+(($debug > 0)) && info "Starting starship"
 eval "$(starship init zsh)"
-source_if_exists $DOTFILES/zsh/aliases/index.zsh
-eval "$(fzf --zsh)"
+(($debug > 0)) && clear_last && success "Starship started"
 
+# ===============================================================================
+
+(($debug > 0)) && info "Sourcing aliases"
+for file in $(find $DOTFILES -maxdepth 2 -name "alias.zsh"); do
+	source_if_exists $file
+done
+(($debug > 0)) && clear_last && success "Aliases sourced"
+
+# ===============================================================================
+
+(($debug > 0)) && info "Evaluating fzf"
+eval "$(fzf --zsh)"
+(($debug > 0)) && clear_last && success "Evaluated fzf"

@@ -2,3 +2,5 @@ fzf
 tlrc
 ripgrep
 navi
+starship
+btop

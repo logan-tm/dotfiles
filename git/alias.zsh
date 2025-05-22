@@ -1,0 +1,5 @@
+alias gs="git status"
+alias ga="git add ."
+alias gc="git commit"
+alias gcm="git commit -m"
+alias gpo="git push origin"

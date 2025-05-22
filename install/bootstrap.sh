@@ -9,7 +9,7 @@ set -e
 
 echo ''
 
-source "$DOTFILES/install/util.sh"
+source "$DOTFILES/util/print.sh"
 
 # UTILS ==========================
 
@@ -134,7 +134,7 @@ install_cargo() {
   if [ -z "$(which rustc)" ]; then
     info "Rust/Cargo not found. Installing rust..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    success "Installed rust"
+    clear_last && success "Installed rust"
   else
     skip "Rust/Cargo found"
   fi
@@ -144,7 +144,7 @@ install_brew() {
   if [ ! -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
     info "Brew not found. Installing brew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    success "Installed brew"
+    clear_last && success "Installed brew"
   else
     skip "Brew found"
   fi
@@ -154,65 +154,79 @@ install_brew() {
 
 install_apt_packages() {
   # Install tools
-  info "Checking apt packages..."
+  # info "Checking apt packages..."
   local total_count=0
   local installed_count=0
 
   # TODO: If no deps file, skip this step
   find "$DOTFILES/install" -name 'deps-apt.txt' | while read depsfile; do
     for package in $(cat "$depsfile"); do
+      info "Checking $package..."
       if ! dpkg --status $package > /dev/null 2>&1 ; then
           sudo apt install -y $package
-          success "$package installed"
+          clear_last && success "$package installed"
       else
-          skip "Already installed $package"
+          clear_last
       fi
     done
   done
 
 
-  # success "Packages installed"
+  success "Apt packages checked/installed"
 }
 
 install_brew_packages() {
   # Install tools
-  info "Checking brew packages..."
+  # info "Checking brew packages..."
   local total_count=0
   local installed_count=0
 
   # TODO: If no deps file, skip this step
   find "$DOTFILES/install" -name 'deps-brew.txt' | while read depsfile; do
+    installed_brew_packages=$(/home/linuxbrew/.linuxbrew/bin/brew list)
     for package in $(cat "$depsfile"); do
-      if ! /home/linuxbrew/.linuxbrew/bin/brew list $1 &>/dev/null; then
-          /home/linuxbrew/.linuxbrew/bin/brew install $package
-          success "$package installed"
+      info "Checking $package..."
+      # check if package is included in the "already installed" list
+      if [[ $installed_brew_packages = *"$package"* ]]; then
+        clear_last
       else
-          skip "Already installed $package"
+        info "Installing $package..."
+        /home/linuxbrew/.linuxbrew/bin/brew install $package > /dev/null 2>&1
+        clear_last && success "$package installed"
       fi
+      # if /home/linuxbrew/.linuxbrew/bin/brew info $package | grep "Not installed" > /dev/null 2>&1; then
+      #     info "Installing $package..."
+      #     /home/linuxbrew/.linuxbrew/bin/brew install $package
+      #     success "$package installed"
+      # else
+      #     skip "Already installed $package"
+      # fi
     done
   done
 
-
-  # success "Packages installed"
+  success "Brew packages checked/installed"
 }
 
 install_cargo_packages() {
   # Install tools
-  info "Checking cargo packages..."
+  # info "Checking cargo packages..."
   local total_count=0
   local installed_count=0
 
   # TODO: If no deps file, skip this step
   find "$DOTFILES/install" -name 'deps-cargo.txt' | while read depsfile; do
     for package in $(cat "$depsfile"); do
+      info "Checking $package..."
       if ! cargo install --list | grep "$package v" > /dev/null 2>&1 ; then
           cargo install $package
-          success "$package installed"
+          clear_last && success "$package installed"
       else
-          skip "Already installed $package"
+          clear_last
       fi
     done
   done
+
+  success "Cargo packages checked/installed"
 }
 
 setup_vim () {
@@ -234,10 +248,30 @@ setup_vim () {
   success 'Vim customization complete'
 }
 
+install_ghostty () {
+  if [ -z "$(which ghostty)" ]; then
+    info "Ghostty not found. Installing ghostty..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
+    success "Installed ghostty"
+  else
+    skip "Ghostty found"
+  fi
+  
+}
+
+install_nvm () {
+  if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    info "NVM needs to be installed"
+    /bin/bash -c "$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh)"
+    success "Installed NVM"
+  else
+    skip "NVM found"
+  fi
+}
+
 install_dotfiles
 create_env_file
 # setup_vim
-setup_antigen
 install_cargo
 install_brew
 
@@ -245,6 +279,8 @@ install_apt_packages
 install_brew_packages
 install_cargo_packages
 # setup_aws_cli
+install_ghostty
+install_nvm
 
 echo ''
 echo ''

@@ -1,0 +1,12 @@
+filekinds:
+  normal:
+    foreground: White
+  # Not working?
+  # directory:
+  #   foreground: "#FFFFFF"
+  #   background: Green
+  #   is_blink: true
+  symlink:
+    foreground: Cyan
+  executable:
+    foreground: Red

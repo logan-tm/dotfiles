@@ -62,9 +62,11 @@ format = "[$symbol](bright-blue)"
 symbol = " "
 
 [aws]
-format = "[$symbol](#ffa400)"
+format = "[$symbol$profile](#ffa400)"
 symbol = " "
-disabled = true
+# disabled = true
+[aws.profile_aliases]
+AdministratorAccess-108782074817 = "logantm-admin"
 
 [buf]
 symbol = " "
