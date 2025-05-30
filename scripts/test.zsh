@@ -3,10 +3,10 @@
 
 info "Waiting..."
 sleep 1
-clear_last && success "Done!"
+pretty_print clear_last && pretty_print success "Done!"
 
 info "Waiting again..."
 sleep 1
-clear_last && success "Done!"
+pretty_print clear_last && pretty_print success "Done!"
 
-debug "Debug message"
+pretty_print debug "Debug message"

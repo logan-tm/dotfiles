@@ -34,7 +34,7 @@ ssoLoginCheck () {
   if [ ! $code -eq 0 ]; then
     aws sso login
   else
-    success "SSO Confirmed"
+    pretty_print success "SSO Confirmed"
     echo $sts
   fi
 }

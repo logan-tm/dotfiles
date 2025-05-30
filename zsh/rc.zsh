@@ -27,10 +27,8 @@ source_if_exists () {
 source_if_exists $HOME/.env.sh # Sets $DOTFILES, $ZSH_DEBUG and other env variables
 source_if_exists $DOTFILES/util/print.sh
 
-local debug=$ZSH_DEBUG
-(($debug > 0)) && info "Debug mode enabled (can disable in ~/.env.sh)"
-
-# history setup
+local debug=${ZSH_DEBUG:-1}
+(($debug > 0)) && pretty_print info "Debug mode enabled (can disable in ~/.env.sh)"
 
 HISTFILE=$HOME/.zhistory
 SAVEHIST=1000
@@ -47,49 +45,53 @@ VISUAL="$EDITOR"
 
 # ===============================================================================
 
-(($debug > 0)) && info "Starting brew"
+(($debug > 0)) && pretty_print info "Starting brew"
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-(($debug > 0)) && clear_last && success "Brew started"
+(($debug > 0)) && pretty_print clear_last && pretty_print success "Brew started"
 
 # ===============================================================================
 
-(($debug > 0)) && info "Sourcing configs"
+(($debug > 0)) && pretty_print info "Sourcing configs"
 source_if_exists $DOTFILES/zsh/util.zsh
 for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
 	source_if_exists $file
 done
-(($debug > 0)) && clear_last && success "Sourced configs"
+(($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced configs"
 
 # ===============================================================================
 
-(($debug > 0)) && info "Sourcing oh-my-zsh"
+(($debug > 0)) && pretty_print info "Sourcing oh-my-zsh"
 export ZSH="$HOME/.oh-my-zsh"
 source_if_exists $ZSH/oh-my-zsh.sh
-(($debug > 0)) && clear_last && success "Sourced oh-my-zsh"
+(($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced oh-my-zsh"
 
 # ===============================================================================
 
-(($debug > 0)) && info "Loading compinit"
+(($debug > 0)) && pretty_print info "Loading compinit"
 autoload -Uz compinit; compinit
 autoload -U +X bashcompinit && bashcompinit
-(($debug > 0)) && clear_last && success "Loaded compinit"
+(($debug > 0)) && pretty_print clear_last && pretty_print success "Loaded compinit"
 
 # ===============================================================================
 
-(($debug > 0)) && info "Starting starship"
+(($debug > 0)) && pretty_print info "Starting starship"
 eval "$(starship init zsh)"
-(($debug > 0)) && clear_last && success "Starship started"
+(($debug > 0)) && pretty_print clear_last && pretty_print success "Starship started"
 
 # ===============================================================================
 
-(($debug > 0)) && info "Sourcing aliases"
+(($debug > 0)) && pretty_print info "Sourcing aliases"
 for file in $(find $DOTFILES -maxdepth 2 -name "alias.zsh"); do
 	source_if_exists $file
 done
-(($debug > 0)) && clear_last && success "Aliases sourced"
+(($debug > 0)) && pretty_print clear_last && pretty_print success "Aliases sourced"
 
 # ===============================================================================
 
-(($debug > 0)) && info "Evaluating fzf"
+(($debug > 0)) && pretty_print info "Evaluating fzf"
 eval "$(fzf --zsh)"
-(($debug > 0)) && clear_last && success "Evaluated fzf"
+(($debug > 0)) && pretty_print clear_last && pretty_print success "Evaluated fzf"
+
+# ===============================================================================
+
+(($debug > 0)) && pretty_print space_hr && pretty_print success 'All set!'

@@ -38,7 +38,7 @@ link_file () {
 
       else
 
-        user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
+        pretty_print user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
         [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
         read -n 1 action  < /dev/tty
 
@@ -70,25 +70,25 @@ link_file () {
     if [ "$overwrite" == "true" ]
     then
       rm -rf "$dst"
-      success "Removed $dst"
+      pretty_print success "Removed $dst"
     fi
 
     if [ "$backup" == "true" ]
     then
       mv "$dst" "${dst}.backup"
-      success "Moved $dst to ${dst}.backup"
+      pretty_print success "Moved $dst to ${dst}.backup"
     fi
 
     # if [ "$skip" == "true" ]
     # then
-    #   skip "Skipped $src"
+    #   pretty_print skip "Skipped $src"
     # fi
   fi
 
   if [ "$skip" != "true" ]  # "false" or empty
   then
     ln -s "$1" "$2"
-    success "Linked $1 to $2"
+    pretty_print success "Linked $1 to $2"
   fi
 }
 
@@ -102,7 +102,7 @@ prop () {
 # LINK FILES AND CREATE ENV FILE
 
 install_dotfiles () {
-  # info 'Checking dotfiles...'
+  # pretty_print info 'Checking dotfiles...'
 
   local overwrite_all=false backup_all=false skip_all=false
   find -H "$DOTFILES" -maxdepth 2 -name 'links.prop' -not -path '*.git*' | while read linkfile; do
@@ -116,15 +116,15 @@ install_dotfiles () {
       link_file "$src" "$dst"
     done
   done
-  success "Linked dotfiles"
+  pretty_print success "Linked dotfiles"
 }
 
 create_env_file () {
     if test -f "$HOME/.env.sh"; then
-        skip "Env file exists ($HOME/.env.sh)"
+        pretty_print skip "Env file exists ($HOME/.env.sh)"
     else
         echo "export DOTFILES=$DOTFILES" > $HOME/.env.sh
-        success 'Created ~/.env.sh'
+        pretty_print success 'Created ~/.env.sh'
     fi
 }
 
@@ -132,21 +132,21 @@ create_env_file () {
 
 install_cargo() {
   if [ -z "$(which rustc)" ]; then
-    info "Rust/Cargo not found. Installing rust..."
+    pretty_print info "Rust/Cargo not found. Installing rust..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    clear_last && success "Installed rust"
+    pretty_print clear_last && pretty_print success "Installed rust"
   else
-    skip "Rust/Cargo found"
+    pretty_print skip "Rust/Cargo found"
   fi
 }
 
 install_brew() {
   if [ ! -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-    info "Brew not found. Installing brew..."
+    pretty_print info "Brew not found. Installing brew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    clear_last && success "Installed brew"
+    pretty_print clear_last && pretty_print success "Installed brew"
   else
-    skip "Brew found"
+    pretty_print skip "Brew found"
   fi
 }
 
@@ -154,30 +154,30 @@ install_brew() {
 
 install_apt_packages() {
   # Install tools
-  # info "Checking apt packages..."
+  # pretty_print info "Checking apt packages..."
   local total_count=0
   local installed_count=0
 
   # TODO: If no deps file, skip this step
   find "$DOTFILES/install" -name 'deps-apt.txt' | while read depsfile; do
     for package in $(cat "$depsfile"); do
-      info "Checking $package..."
+      pretty_print info "Checking $package..."
       if ! dpkg --status $package > /dev/null 2>&1 ; then
           sudo apt install -y $package
-          clear_last && success "$package installed"
+          pretty_print clear_last && pretty_print success "$package installed"
       else
-          clear_last
+          pretty_print clear_last
       fi
     done
   done
 
 
-  success "Apt packages checked/installed"
+  pretty_print success "Apt packages checked/installed"
 }
 
 install_brew_packages() {
   # Install tools
-  # info "Checking brew packages..."
+  # pretty_print info "Checking brew packages..."
   local total_count=0
   local installed_count=0
 
@@ -185,52 +185,52 @@ install_brew_packages() {
   find "$DOTFILES/install" -name 'deps-brew.txt' | while read depsfile; do
     installed_brew_packages=$(/home/linuxbrew/.linuxbrew/bin/brew list)
     for package in $(cat "$depsfile"); do
-      info "Checking $package..."
+      pretty_print info "Checking $package..."
       # check if package is included in the "already installed" list
       if [[ $installed_brew_packages = *"$package"* ]]; then
-        clear_last
+        pretty_print clear_last
       else
-        info "Installing $package..."
+        pretty_print info "Installing $package..."
         /home/linuxbrew/.linuxbrew/bin/brew install $package > /dev/null 2>&1
-        clear_last && success "$package installed"
+        pretty_print clear_last && pretty_print success "$package installed"
       fi
-      # if /home/linuxbrew/.linuxbrew/bin/brew info $package | grep "Not installed" > /dev/null 2>&1; then
-      #     info "Installing $package..."
+      # if /home/linuxbrew/.linuxbrew/bin/brew pretty_print info $package | grep "Not installed" > /dev/null 2>&1; then
+      #     pretty_print info "Installing $package..."
       #     /home/linuxbrew/.linuxbrew/bin/brew install $package
-      #     success "$package installed"
+      #     pretty_print success "$package installed"
       # else
-      #     skip "Already installed $package"
+      #     pretty_print skip "Already installed $package"
       # fi
     done
   done
 
-  success "Brew packages checked/installed"
+  pretty_print success "Brew packages checked/installed"
 }
 
 install_cargo_packages() {
   # Install tools
-  # info "Checking cargo packages..."
+  # pretty_print info "Checking cargo packages..."
   local total_count=0
   local installed_count=0
 
   # TODO: If no deps file, skip this step
   find "$DOTFILES/install" -name 'deps-cargo.txt' | while read depsfile; do
     for package in $(cat "$depsfile"); do
-      info "Checking $package..."
+      pretty_print info "Checking $package..."
       if ! cargo install --list | grep "$package v" > /dev/null 2>&1 ; then
           cargo install $package
-          clear_last && success "$package installed"
+          pretty_print clear_last && pretty_print success "$package installed"
       else
-          clear_last
+          pretty_print clear_last
       fi
     done
   done
 
-  success "Cargo packages checked/installed"
+  pretty_print success "Cargo packages checked/installed"
 }
 
 setup_vim () {
-  info 'Customizing vim...'
+  pretty_print info 'Customizing vim...'
 
   # COLORS_DIR=~/.vim/colors/
   # THEME=$DOTFILES/vim/themes/spring-night.vim
@@ -245,27 +245,27 @@ setup_vim () {
   
   vim +PlugInstall +PlugUpdate +qall
 
-  success 'Vim customization complete'
+  pretty_print success 'Vim customization complete'
 }
 
 install_ghostty () {
   if [ -z "$(which ghostty)" ]; then
-    info "Ghostty not found. Installing ghostty..."
+    pretty_print info "Ghostty not found. Installing ghostty..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
-    success "Installed ghostty"
+    pretty_print success "Installed ghostty"
   else
-    skip "Ghostty found"
+    pretty_print skip "Ghostty found"
   fi
   
 }
 
 install_nvm () {
   if [ ! -s "$NVM_DIR/nvm.sh" ]; then
-    info "NVM needs to be installed"
+    pretty_print info "NVM needs to be installed"
     /bin/bash -c "$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh)"
-    success "Installed NVM"
+    pretty_print success "Installed NVM"
   else
-    skip "NVM found"
+    pretty_print skip "NVM found"
   fi
 }
 
@@ -282,6 +282,5 @@ install_cargo_packages
 install_ghostty
 install_nvm
 
-echo ''
-echo ''
-success 'All installed!'
+pretty_print space_hr
+pretty_print success 'All installed!'
