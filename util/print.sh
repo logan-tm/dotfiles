@@ -4,6 +4,9 @@ pretty_print () {
   # check if the first argument is info, user, success, fail, skip, or debug
   case $1 in
     info)
+      printf "\r  [\033[00;34mINFO\033[0m] $2\n"
+      ;;
+    process)
       printf "\r  [ \033[00;34m..\033[0m ] $2\n"
       ;;
     user)
@@ -34,7 +37,8 @@ pretty_print () {
       printf "Usage: pretty_print [info|user|success|fail|skip|debug|clear_last|space|space_hr]\n"
       printf "Prints a message with a specific format.\n\n"
       printf "Options:\n"
-      printf "  info       Print an informational message\n"
+      printf "  info       [INFO] <message>\n"
+      printf "  process    [ .. ] <message>\n"
       printf "  user       Print a user prompt message\n"
       printf "  success    Print a success message\n"
       printf "  fail       Print a failure message\n"

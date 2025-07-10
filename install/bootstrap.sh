@@ -269,6 +269,16 @@ install_nvm () {
   fi
 }
 
+install_uv () {
+  if [ -z "$(which uv)" ]; then
+    pretty_print info "UV not found. Installing UV..."
+    /bin/bash -c "$(curl -fsSL https://astral.sh/uv/install.sh)"
+    pretty_print success "Installed UV"
+  else
+    pretty_print skip "UV found"
+  fi
+}
+
 install_dotfiles
 create_env_file
 # setup_vim
@@ -281,6 +291,7 @@ install_cargo_packages
 # setup_aws_cli
 install_ghostty
 install_nvm
+install_uv
 
 pretty_print space_hr
 pretty_print success 'All installed!'

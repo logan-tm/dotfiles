@@ -14,6 +14,23 @@
 #   fi  
 # done
 
+local debug=${ZSH_DEBUG:-1}
+
+run_step () {
+  local desc=$1; shift
+  if (($debug <= 0)); then
+    $@ > /dev/null 2>&1
+  else
+  	pretty_print process "$desc"
+		if ! $@; then
+			pretty_print clear_last && pretty_print error "Failed: $desc"
+			# continue anyway for now
+		else
+			pretty_print clear_last && pretty_print success "$desc"
+		fi
+  fi
+}
+
 XDG_CONFIG_HOME="/home/lm/.config"
 
 source_if_exists () {
@@ -27,7 +44,7 @@ source_if_exists () {
 source_if_exists $HOME/.env.sh # Sets $DOTFILES, $ZSH_DEBUG and other env variables
 source_if_exists $DOTFILES/util/print.sh
 
-local debug=${ZSH_DEBUG:-1}
+
 (($debug > 0)) && pretty_print info "Debug mode enabled (can disable in ~/.env.sh)"
 
 HISTFILE=$HOME/.zhistory
@@ -45,53 +62,77 @@ VISUAL="$EDITOR"
 
 # ===============================================================================
 
-(($debug > 0)) && pretty_print info "Starting brew"
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-(($debug > 0)) && pretty_print clear_last && pretty_print success "Brew started"
+# (($debug > 0)) && pretty_print info "Starting brew"
+# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# (($debug > 0)) && pretty_print clear_last && pretty_print success "Brew started"
+run_step "Starting brew" eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # ===============================================================================
 
-(($debug > 0)) && pretty_print info "Sourcing configs"
-source_if_exists $DOTFILES/zsh/util.zsh
-for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
-	source_if_exists $file
-done
-(($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced configs"
+# (($debug > 0)) && pretty_print info "Sourcing configs"
+# source_if_exists $DOTFILES/zsh/util.zsh
+# for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
+# 	source_if_exists $file
+# done
+# (($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced configs"
 
 # ===============================================================================
 
-(($debug > 0)) && pretty_print info "Sourcing oh-my-zsh"
-export ZSH="$HOME/.oh-my-zsh"
-source_if_exists $ZSH/oh-my-zsh.sh
-(($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced oh-my-zsh"
+source_oh_my_zsh () {
+	export ZSH="$HOME/.oh-my-zsh"
+	source_if_exists $ZSH/oh-my-zsh.sh
+}
+
+# (($debug > 0)) && pretty_print info "Sourcing oh-my-zsh"
+# export ZSH="$HOME/.oh-my-zsh"
+# source_if_exists $ZSH/oh-my-zsh.sh
+# (($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced oh-my-zsh"
+run_step "Sourcing oh-my-zsh" source_oh_my_zsh
 
 # ===============================================================================
 
-(($debug > 0)) && pretty_print info "Loading compinit"
-autoload -Uz compinit; compinit
-autoload -U +X bashcompinit && bashcompinit
-(($debug > 0)) && pretty_print clear_last && pretty_print success "Loaded compinit"
+# (($debug > 0)) && pretty_print info "Loading compinit"
+# autoload -Uz compinit; compinit
+# autoload -U +X bashcompinit && bashcompinit
+# (($debug > 0)) && pretty_print clear_last && pretty_print success "Loaded compinit"
+load_compinit () {
+	autoload -Uz compinit; compinit
+	autoload -U +X bashcompinit && bashcompinit
+}
+
+run_step "Loading compinit" load_compinit
+
 
 # ===============================================================================
 
-(($debug > 0)) && pretty_print info "Starting starship"
-eval "$(starship init zsh)"
-(($debug > 0)) && pretty_print clear_last && pretty_print success "Starship started"
+# (($debug > 0)) && pretty_print info "Starting starship"
+# eval "$(starship init zsh)"
+# (($debug > 0)) && pretty_print clear_last && pretty_print success "Starship started"
+run_step "Starting starship" eval "$(starship init zsh)"
 
 # ===============================================================================
 
-(($debug > 0)) && pretty_print info "Sourcing aliases"
-for file in $(find $DOTFILES -maxdepth 2 -name "alias.zsh"); do
-	source_if_exists $file
-done
-(($debug > 0)) && pretty_print clear_last && pretty_print success "Aliases sourced"
+source_aliases () {
+	for file in $(find $DOTFILES -maxdepth 2 -name "alias.zsh"); do
+		source_if_exists $file
+	done
+}
+# (($debug > 0)) && pretty_print info "Sourcing aliases"
+# (($debug > 0)) && pretty_print clear_last && pretty_print success "Aliases sourced"
+run_step "Sourcing aliases" source_aliases
 
 # ===============================================================================
 
-(($debug > 0)) && pretty_print info "Evaluating fzf"
-eval "$(fzf --zsh)"
-(($debug > 0)) && pretty_print clear_last && pretty_print success "Evaluated fzf"
+# (($debug > 0)) && pretty_print info "Evaluating fzf"
+# eval "$(fzf --zsh)"
+# (($debug > 0)) && pretty_print clear_last && pretty_print success "Evaluated fzf"
+run_step "Evaluating fzf" eval "$(fzf --zsh)"
+
+# ===============================================================================
+
+run_step "Sourcing ~/.local/bin/env" . "$HOME/.local/bin/env"
 
 # ===============================================================================
 
 (($debug > 0)) && pretty_print space_hr && pretty_print success 'All set!'
+# . "$HOME/.local/bin/env"
