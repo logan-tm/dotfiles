@@ -46,6 +46,7 @@ source_if_exists $DOTFILES/util/print.sh
 
 
 (($debug > 0)) && pretty_print info "Debug mode enabled (can disable in ~/.env.sh)"
+pretty_print space_hr
 
 HISTFILE=$HOME/.zhistory
 SAVEHIST=1000
@@ -71,10 +72,13 @@ run_step "Starting brew" eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # (($debug > 0)) && pretty_print info "Sourcing configs"
 # source_if_exists $DOTFILES/zsh/util.zsh
-# for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
-# 	source_if_exists $file
-# done
 # (($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced configs"
+source_configs () {
+	for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
+		source_if_exists $file
+	done
+}
+run_step "Sourcing configs" source_configs
 
 # ===============================================================================
 
