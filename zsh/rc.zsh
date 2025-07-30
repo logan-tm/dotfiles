@@ -56,6 +56,7 @@ setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
 
+zstyle :omz:plugins:ssh-agent quiet yes # suppress ssh-agent message on startup
 plugins=(git docker ssh-agent zsh-autosuggestions fast-syntax-highlighting jsontools)
 
 export EDITOR=vim
@@ -63,16 +64,10 @@ VISUAL="$EDITOR"
 
 # ===============================================================================
 
-# (($debug > 0)) && pretty_print info "Starting brew"
-# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-# (($debug > 0)) && pretty_print clear_last && pretty_print success "Brew started"
 run_step "Starting brew" eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # ===============================================================================
 
-# (($debug > 0)) && pretty_print info "Sourcing configs"
-# source_if_exists $DOTFILES/zsh/util.zsh
-# (($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced configs"
 source_configs () {
 	for file in $(find $DOTFILES -maxdepth 2 -name "config.zsh"); do
 		source_if_exists $file
@@ -86,32 +81,18 @@ source_oh_my_zsh () {
 	export ZSH="$HOME/.oh-my-zsh"
 	source_if_exists $ZSH/oh-my-zsh.sh
 }
-
-# (($debug > 0)) && pretty_print info "Sourcing oh-my-zsh"
-# export ZSH="$HOME/.oh-my-zsh"
-# source_if_exists $ZSH/oh-my-zsh.sh
-# (($debug > 0)) && pretty_print clear_last && pretty_print success "Sourced oh-my-zsh"
 run_step "Sourcing oh-my-zsh" source_oh_my_zsh
 
 # ===============================================================================
 
-# (($debug > 0)) && pretty_print info "Loading compinit"
-# autoload -Uz compinit; compinit
-# autoload -U +X bashcompinit && bashcompinit
-# (($debug > 0)) && pretty_print clear_last && pretty_print success "Loaded compinit"
 load_compinit () {
 	autoload -Uz compinit; compinit
 	autoload -U +X bashcompinit && bashcompinit
 }
-
 run_step "Loading compinit" load_compinit
-
 
 # ===============================================================================
 
-# (($debug > 0)) && pretty_print info "Starting starship"
-# eval "$(starship init zsh)"
-# (($debug > 0)) && pretty_print clear_last && pretty_print success "Starship started"
 run_step "Starting starship" eval "$(starship init zsh)"
 
 # ===============================================================================
@@ -121,15 +102,10 @@ source_aliases () {
 		source_if_exists $file
 	done
 }
-# (($debug > 0)) && pretty_print info "Sourcing aliases"
-# (($debug > 0)) && pretty_print clear_last && pretty_print success "Aliases sourced"
 run_step "Sourcing aliases" source_aliases
 
 # ===============================================================================
 
-# (($debug > 0)) && pretty_print info "Evaluating fzf"
-# eval "$(fzf --zsh)"
-# (($debug > 0)) && pretty_print clear_last && pretty_print success "Evaluated fzf"
 run_step "Evaluating fzf" eval "$(fzf --zsh)"
 
 # ===============================================================================
