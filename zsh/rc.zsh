@@ -11,7 +11,7 @@
 #   if [[ $file != $thisfile ]]; then
 #     # echo "SUBFILE: $file"
 #     source $file
-#   fi  
+#   fi
 # done
 
 local debug=${ZSH_DEBUG:-1}
@@ -52,7 +52,7 @@ pretty_print space_hr
 HISTFILE=$HOME/.zhistory
 SAVEHIST=1000
 HISTSIZE=999
-setopt share_history 
+setopt share_history
 setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
@@ -66,6 +66,7 @@ VISUAL="$EDITOR"
 # ===============================================================================
 
 run_step "Starting brew" eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+run_step "Starting cargo" source_if_exists "$HOME/.cargo/env"
 
 # ===============================================================================
 

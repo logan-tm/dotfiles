@@ -131,13 +131,14 @@ create_env_file () {
 # CHECK FOR AND INSTALL PACKAGE INSTALLERS
 
 install_cargo() {
-  if [ -z "$(which rustc)" ]; then
+  if [ ! -f "$HOME/.cargo/env" ]; then
     pretty_print info "Rust/Cargo not found. Installing rust..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     pretty_print clear_last && pretty_print success "Installed rust"
   else
     pretty_print skip "Rust/Cargo found"
   fi
+  . "$HOME/.cargo/env"
 }
 
 install_brew() {
@@ -242,7 +243,7 @@ setup_vim () {
 
   curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim &> /dev/null
-  
+
   vim +PlugInstall +PlugUpdate +qall
 
   pretty_print success 'Vim customization complete'
@@ -256,7 +257,7 @@ install_ghostty () {
   else
     pretty_print skip "Ghostty found"
   fi
-  
+
 }
 
 install_nvm () {
@@ -279,6 +280,50 @@ install_uv () {
   fi
 }
 
+install_oh_my_zsh() {
+  if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    pretty_print info "Oh My Zsh not found. Installing..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --keep-zshrc
+    pretty_print success "Installed Oh My Zsh"
+  else
+    pretty_print skip "Oh My Zsh found"
+  fi
+}
+
+install_zsh_plugins() {
+  pretty_print info "Checking zsh plugins..."
+  AUTO_SUGGEST_DIR="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+
+  if [[ ! -d "$AUTO_SUGGEST_DIR" ]]; then
+    pretty_print info "Installing auto suggestions plugin..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions $AUTO_SUGGEST_DIR
+    pretty_print clear_last && pretty_print success "Auto suggestions plugin installed"
+  else
+    pretty_print skip "zsh-autosuggestions already installed"
+  fi
+
+  SYNTAX_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting"
+
+  if [[ ! -d "$SYNTAX_DIR" ]]; then
+    pretty_print info "Installing syntax highlighting plugin..."
+    git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git $SYNTAX_DIR
+    pretty_print clear_last && pretty_print success "Syntax highlighting plugin installed"
+  else
+    pretty_print skip "fast-syntax-highlighting already installed"
+  fi
+}
+
+
+# Loop through each item in the specified directory
+for SCRIPT_FILE in "$DOTFILES/zsh/plugins"/*; do
+  # Check if the item is a regular file AND is executable
+  if [ -f "$SCRIPT_FILE" ] && [ -x "$SCRIPT_FILE" ]; then
+    # echo "Executing: $SCRIPT_FILE"
+    # Execute the script
+    "$SCRIPT_FILE"
+  fi
+done
+
 install_dotfiles
 create_env_file
 # setup_vim
@@ -289,6 +334,8 @@ install_apt_packages
 install_brew_packages
 install_cargo_packages
 # setup_aws_cli
+install_oh_my_zsh
+install_zsh_plugins
 install_ghostty
 install_nvm
 install_uv
