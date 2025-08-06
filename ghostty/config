@@ -12,7 +12,7 @@ mouse-scroll-multiplier = 2
 window-padding-balance = true
 window-save-state = always
 
-keybind = ctrl+c=copy_to_clipboard
+keybind = performable:ctrl+c=copy_to_clipboard
 keybind = ctrl+v=paste_from_clipboard
 
 keybind = alt+n=new_tab

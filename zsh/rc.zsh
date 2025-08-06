@@ -43,6 +43,7 @@ source_if_exists () {
 
 source_if_exists $HOME/.env.sh # Sets $DOTFILES, $ZSH_DEBUG and other env variables
 source_if_exists $DOTFILES/util/print.sh
+source_if_exists $DOTFILES/zsh/util.zsh
 
 
 (($debug > 0)) && pretty_print info "Debug mode enabled (can disable in ~/.env.sh)"
@@ -116,3 +117,4 @@ run_step "Sourcing ~/.local/bin/env" . "$HOME/.local/bin/env"
 
 (($debug > 0)) && pretty_print space_hr && pretty_print success 'All set!'
 # . "$HOME/.local/bin/env"
+

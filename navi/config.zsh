@@ -9,3 +9,9 @@ function zle_navi {
 
 zle -N zle_navi;
 bindkey '^N' zle_navi;
+
+function zle_ls {
+  zle_eval ls --color=auto
+}
+
+zle -N zle_ls; bindkey "^L" zle_ls
