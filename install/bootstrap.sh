@@ -193,7 +193,7 @@ install_brew_packages() {
       else
         pretty_print info "Installing $package..."
         /home/linuxbrew/.linuxbrew/bin/brew install $package > /dev/null 2>&1
-        pretty_print clear_last && pretty_print success "$package installed"
+        pretty_print clear_last && pretty_print clear_last && pretty_print success "$package installed"
       fi
       # if /home/linuxbrew/.linuxbrew/bin/brew pretty_print info $package | grep "Not installed" > /dev/null 2>&1; then
       #     pretty_print info "Installing $package..."

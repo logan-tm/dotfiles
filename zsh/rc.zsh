@@ -109,6 +109,7 @@ run_step "Sourcing aliases" source_aliases
 # ===============================================================================
 
 run_step "Evaluating fzf" eval "$(fzf --zsh)"
+run_step "Evaluating zoxide" eval "$(zoxide init zsh)"
 
 # ===============================================================================
 

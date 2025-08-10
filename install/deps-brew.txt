@@ -4,3 +4,4 @@ ripgrep
 navi
 starship
 btop
+zoxide
