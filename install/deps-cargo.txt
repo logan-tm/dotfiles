@@ -1,3 +1,4 @@
+cargo-update
 bat
 eza
 yazi-fm

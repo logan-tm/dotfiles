@@ -9,3 +9,8 @@ alias mkdir="mkdir -pv"
 
 alias reload="source ~/.zshrc"
 alias dots="code ~/.dotfiles"
+
+update_all () {
+  pretty_print info "Testing!"
+  # brew update && brew upgrade && brew cleanup
+}
