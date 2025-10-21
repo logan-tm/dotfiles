@@ -11,6 +11,47 @@ echo ''
 
 source "$DOTFILES/util/print.sh"
 
+# Determine OS name
+os=$(uname)
+
+# Install git
+if [ "$os" = "Linux" ]; then
+
+  echo "This is a Linux machine"
+
+  if [[ -f /etc/redhat-release ]]; then
+    echo "Running RedHat!"
+    pkg_manager=yum
+  elif [[ -f /etc/debian_version ]]; then
+    echo "Running Debian!"
+    pkg_manager=apt
+  elif [[ -f /etc/arch-release ]]; then
+    echo "Running Arch!"
+    pkg_manager=pacman
+  fi
+
+  if [ $pkg_manager = "yum" ]; then
+    yum install git -y
+  elif [ $pkg_manager = "apt" ]; then  
+    apt install git -y
+  elif [ $pkg_manager = "pacman" ]; then  
+    sudo pacman -Syu --noconfirm git
+  fi
+
+elif [ "$os" = "Darwin" ]; then
+
+  echo "This is a Mac Machine" 
+  brew install git
+
+else
+  echo "Unsupported OS"
+  exit 1
+
+fi
+
+echo "Git installed!"
+exit 0
+
 # UTILS ==========================
 
 link_file () {
