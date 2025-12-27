@@ -2,7 +2,7 @@ background-opacity = 0.7
 
 shell-integration = zsh
 
-theme = NightLion v2
+# theme = NightLion v2
 
 font-family = CaskaydiaCove Nerd Font
 

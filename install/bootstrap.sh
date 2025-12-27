@@ -9,48 +9,68 @@ set -e
 
 echo ''
 
+# shellcheck source=/dev/null
 source "$DOTFILES/util/print.sh"
 
 # Determine OS name
 os=$(uname)
 
-# Install git
+# Determine package manager for Linux
 if [ "$os" = "Linux" ]; then
 
-  echo "This is a Linux machine"
+  pretty_print info "This is a Linux machine"
 
   if [[ -f /etc/redhat-release ]]; then
-    echo "Running RedHat!"
+    pretty_print info "Running RedHat!"
     pkg_manager=yum
   elif [[ -f /etc/debian_version ]]; then
-    echo "Running Debian!"
+    pretty_print info "Running Debian!"
     pkg_manager=apt
   elif [[ -f /etc/arch-release ]]; then
-    echo "Running Arch!"
+    pretty_print info "Running Arch!"
     pkg_manager=pacman
-  fi
-
-  if [ $pkg_manager = "yum" ]; then
-    yum install git -y
-  elif [ $pkg_manager = "apt" ]; then  
-    apt install git -y
-  elif [ $pkg_manager = "pacman" ]; then  
-    sudo pacman -Syu --noconfirm git
   fi
 
 elif [ "$os" = "Darwin" ]; then
 
-  echo "This is a Mac Machine" 
-  brew install git
+  pretty_print info "This is a Mac Machine"
+  pkg_manager=none
 
 else
-  echo "Unsupported OS"
+  pretty_print fail "Unsupported OS"
   exit 1
 
 fi
 
-echo "Git installed!"
-exit 0
+if command -v git &> /dev/null; then
+    pretty_print skip "Git is installed ($(git --version))"
+else
+    pretty_print info "Git is not installed"
+
+  # Install git
+  if [ "$os" = "Linux" ]; then
+
+    if [ $pkg_manager = "yum" ]; then
+      yum install git -y
+    elif [ $pkg_manager = "apt" ]; then  
+      apt install git -y
+    elif [ $pkg_manager = "pacman" ]; then  
+      sudo pacman -Syu --noconfirm git
+    fi
+
+  elif [ "$os" = "Darwin" ]; then
+
+    brew install git
+
+  else
+    pretty_print fail "Unsupported OS"
+    exit 1
+
+  fi
+
+  pretty_print success "Git installed!"
+fi
+
 
 # UTILS ==========================
 
@@ -271,6 +291,28 @@ install_cargo_packages() {
   pretty_print success "Cargo packages checked/installed"
 }
 
+install_pacman_packages() {
+  # Install tools
+  # pretty_print info "Checking cargo packages..."
+  local total_count=0
+  local installed_count=0
+
+  # TODO: If no deps file, skip this step
+  find "$DOTFILES/install" -name 'deps-pacman.txt' | while read depsfile; do
+    for package in $(cat "$depsfile"); do
+      pretty_print info "Checking $package..."
+      if ! pacman -Q $package > /dev/null 2>&1 ; then
+          sudo pacman -S --noconfirm $package > /dev/null 2>&1
+          pretty_print clear_last && pretty_print success "$package installed"
+      else
+          pretty_print clear_last
+      fi
+    done
+  done
+
+  pretty_print success "Pacman packages checked/installed"
+}
+
 setup_vim () {
   pretty_print info 'Customizing vim...'
 
@@ -333,53 +375,86 @@ install_oh_my_zsh() {
 
 install_zsh_plugins() {
   pretty_print info "Checking zsh plugins..."
-  AUTO_SUGGEST_DIR="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+
+  # Auto suggestions
+  AUTO_SUGGEST_DIR="${ZSH_CUSTOM:-$HOME/.config/zsh}/plugins/zsh-autosuggestions"
 
   if [[ ! -d "$AUTO_SUGGEST_DIR" ]]; then
     pretty_print info "Installing auto suggestions plugin..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions $AUTO_SUGGEST_DIR
+    git clone https://github.com/zsh-users/zsh-autosuggestions $AUTO_SUGGEST_DIR > /dev/null 2>&1
     pretty_print clear_last && pretty_print success "Auto suggestions plugin installed"
   else
     pretty_print skip "zsh-autosuggestions already installed"
   fi
 
-  SYNTAX_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting"
+  # Syntax highlighting
+  SYNTAX_DIR="${ZSH_CUSTOM:-$HOME/.config/zsh}/plugins/fast-syntax-highlighting"
 
   if [[ ! -d "$SYNTAX_DIR" ]]; then
     pretty_print info "Installing syntax highlighting plugin..."
-    git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git $SYNTAX_DIR
+    git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git $SYNTAX_DIR > /dev/null 2>&1
     pretty_print clear_last && pretty_print success "Syntax highlighting plugin installed"
   else
     pretty_print skip "fast-syntax-highlighting already installed"
   fi
+
+  pretty_print success "Zsh plugins installed/checked"
+}
+
+install_yay() {
+  if yay --version >/dev/null 2>&1; then
+        pretty_print skip "yay is already installed"
+        return 0
+    fi
+    pretty_print info "Installing required dependencies: git and base-devel..."
+    sudo pacman -S --needed --noconfirm git base-devel
+
+    pretty_print info "Cloning the yay repository..."
+    git clone https://aur.archlinux.org/yay.git /tmp/yay
+
+    pretty_print info "Navigating to the yay directory and building/installing..."
+    cd /tmp/yay
+    makepkg -si --noconfirm
+
+    pretty_print info "Cleaning up..."
+    rm -rf /tmp/yay
+
+    pretty_print info "Testing installation..."
+    # if yay --version >/dev/null 2>&1; then
+    if yay --version; then
+        pretty_print success "yay is configured correctly."
+    else
+        pretty_print fail "yay configuration test failed. Please check the installation."
+        exit 1
+    fi
+
+    echo "yay installation complete."
 }
 
 
-# Loop through each item in the specified directory
-for SCRIPT_FILE in "$DOTFILES/zsh/plugins"/*; do
-  # Check if the item is a regular file AND is executable
-  if [ -f "$SCRIPT_FILE" ] && [ -x "$SCRIPT_FILE" ]; then
-    # echo "Executing: $SCRIPT_FILE"
-    # Execute the script
-    "$SCRIPT_FILE"
-  fi
-done
 
 install_dotfiles
 create_env_file
 # setup_vim
-install_cargo
-install_brew
 
-install_apt_packages
-install_brew_packages
-install_cargo_packages
+if [ $pkg_manager = "apt" ]; then
+  # Running ubuntu or similar
+  install_brew
+  install_cargo
+
+  install_apt_packages
+  install_brew_packages
+  install_cargo_packages
+elif [ $pkg_manager = "pacman" ]; then
+  install_yay
+  install_pacman_packages
+fi
 # setup_aws_cli
-install_oh_my_zsh
+# install_oh_my_zsh
 install_zsh_plugins
 install_ghostty
-install_nvm
-install_uv
+# install_nvm
+# install_uv
 
 pretty_print space_hr
 pretty_print success 'All installed!'

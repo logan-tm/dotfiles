@@ -4,25 +4,25 @@ pretty_print () {
   # check if the first argument is info, user, success, fail, skip, or debug
   case $1 in
     info)
-      printf "\r  [\033[00;34mINFO\033[0m] $2\n"
+      printf "\r  [\033[00;34mINFO\033[0m] %s\n" "$2"
       ;;
     process)
-      printf "\r  [ \033[00;34m..\033[0m ] $2\n"
+      printf "\r  [ \033[00;34m..\033[0m ] %s\n" "$2"
       ;;
     user)
-      printf "\r  [ \033[0;33m??\033[0m ] $2\n"
+      printf "\r  [ \033[0;33m??\033[0m ] %s\n" "$2"
       ;;
     success)
-      printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $2\n"
+      printf "\r\033[2K  [ \033[00;32mOK\033[0m ] %s\n" "$2"
       ;;
     fail)
-      printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $2\n"
+      printf "\r\033[2K  [\033[0;31mFAIL\033[0m] %s\n" "$2"
       ;;
     skip)
-      printf "\r\033[2K  [\033[0;33mSKIP\033[0m] $2\n"
+      printf "\r\033[2K  [\033[0;33mSKIP\033[0m] %s\n" "$2"
       ;;
     debug)
-      printf "\r\033[2K  [\033[0;35mDBUG\033[0m] $2\n"
+      printf "\r\033[2K  [\033[0;35mDBUG\033[0m] %s\n" "$2"
       ;;
     clear_last)
       printf '\033[1A\033[K'  # Clear the last line
@@ -50,7 +50,7 @@ pretty_print () {
       exit 0
       ;;
     *)
-      printf "Unknown print type: $1"
+      printf "Unknown print type: %s" "$1"
       exit 1
       ;;
   esac

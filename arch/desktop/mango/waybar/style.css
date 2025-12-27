@@ -1,0 +1,82 @@
+* {
+    border: none;
+    /* Using Propo version here makes working with icons easier */
+    font-family: "CaskaydiaCove Nerd Font Propo", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+window#waybar {
+    /* background: rgba(43, 48, 59, 0.5);
+    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    color: white; */
+    background: transparent;
+    color: white;
+}
+
+tooltip {
+  background: rgba(43, 48, 59, 0.5);
+  border: 1px solid rgba(100, 114, 125, 0.5);
+}
+
+tooltip label {
+  color: white;
+}
+
+#workspaces {
+    transition: all 250ms ease-in-out;
+}
+
+#workspaces button {
+    transition: all 250ms ease-in-out;
+    padding: 0 5px;
+    margin: 0 2px;
+    background: #121212;
+    color: white;
+    border-bottom: 3px solid transparent;
+    border: 2px solid #adadad;
+}
+
+#workspaces button.active {
+    transition: all 250ms ease-in-out;
+    min-width: 50px;
+    color: #2ad8ef
+}
+
+#workspaces button.empty {
+    color: #64727D
+}
+
+#backlight,
+#battery,
+#pulseaudio,
+#clock {
+    background-color: #ffffff;
+    color: black;
+    padding: 0 5px;
+    margin: 0 5px;
+    border-radius: 8px;
+}
+
+#clock {
+    background-color: #adadad;
+}
+
+#battery.charging {
+    color: white;
+    background-color: #26A65B;
+    padding: 0 5px;
+    margin: 0 10px;
+    border-radius: 8px;
+}
+
+#window {
+    background: #121212;
+    color: white;
+    padding: 0 5px;
+    margin: 0 5px;
+    border-radius: 8px;
+}

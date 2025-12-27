@@ -1,0 +1,1 @@
+alias syu="sudo pacman -Syuq --noconfirm"
