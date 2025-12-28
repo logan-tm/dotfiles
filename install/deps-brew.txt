@@ -5,3 +5,4 @@ navi
 starship
 btop
 zoxide
+carapace

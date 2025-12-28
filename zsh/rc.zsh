@@ -108,10 +108,19 @@ setup_android_sdk_paths () {
 	export PATH=$PATH:$ANDROID_HOME/tools/bin
 }
 run_step "Exporting Android variables..." setup_android_sdk_paths
+
 # ===============================================================================
 
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
+setup_carapace () {
+	zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+	source <(carapace _carapace)
+}
+
+run_step "Sourcing carapace" setup_carapace
+
+# ===============================================================================
+
+run_step "Sourcing ~/.local/bin/env" . "$HOME/.local/bin/env"
 
 # ===============================================================================
 
@@ -124,3 +133,12 @@ else
 fi;
 # . "$HOME/.local/bin/env"
 
+
+# # bun completions
+# [ -s "/home/lm/.bun/_bun" ] && source "/home/lm/.bun/_bun"
+
+# # bun
+# export BUN_INSTALL="$HOME/.bun"
+# export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
