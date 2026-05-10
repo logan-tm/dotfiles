@@ -23,7 +23,7 @@ __NV_PRIME_RENDER_OFFLOAD=1
 __GLX_VENDOR_LIBRARY_NAME=nvidia
 
 source $DOTFILES/util/index.sh
-source_if_exists $HOME/.env.sh # Sets $DOTFILES, $ZSH_DEBUG and other env variables
+source_if_exists $HOME/.env.sh # Sets $ZSH_DEBUG and other env variables
 local debug=${ZSH_DEBUG:-1}
 source_if_exists $DOTFILES/zsh/util.zsh
 
@@ -42,14 +42,11 @@ setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
 
-# zstyle :omz:plugins:ssh-agent quiet yes # suppress ssh-agent message on startup
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' # auto complete case insensitive
-# plugins=(git docker ssh-agent jsontools)
 source_if_exists $HOME/.config/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 source_if_exists $HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 plugins=(git docker ssh-agent zsh-autosuggestions fast-syntax-highlighting jsontools)
 
-# export EDITOR=vim
 export EDITOR=gedit
 VISUAL="$EDITOR"
 source_if_exists $DOTFILES/zsh/key-bindings.zsh
@@ -61,7 +58,7 @@ source_configs () {
 		source_if_exists $file
 	done
 }
-run_step "Sourcing configs" source_configs
+run_step "Sourcing configs..." source_configs
 
 # ===============================================================================
 
@@ -70,12 +67,11 @@ source_aliases () {
 		source_if_exists $file
 	done
 }
-run_step "Sourcing aliases" source_aliases
+run_step "Sourcing aliases..." source_aliases
 
 # ===============================================================================
 
 load_compinit () {
-	# autoload -Uz compinit; compinit
 	autoload -Uz compinit;
 
 	if [[ -n $HOME/.cache/zsh/zcompdump-$ZSH_VERSION(#qN.mh+24) ]]; then
@@ -85,21 +81,21 @@ load_compinit () {
 	fi; 
 	autoload -U +X bashcompinit && bashcompinit
 }
-run_step "Loading compinit" load_compinit
+run_step "Loading compinit..." load_compinit
 
 # ===============================================================================
 
-run_step "Starting starship" eval "$(starship init zsh)"
+start_eval_tools () {
+	eval "$(starship init zsh)"
+	eval "$(fzf --zsh)"
+	eval "$(zoxide init zsh)"
+}
 
-# ===============================================================================
-
-run_step "Evaluating fzf" eval "$(fzf --zsh)"
-run_step "Evaluating zoxide" eval "$(zoxide init zsh)"
+run_step "Starting eval tools..." start_eval_tools
 
 # ===============================================================================
 
 setup_android_sdk_paths () {
-	# Android SDK paths
 	export ANDROID_HOME=$HOME/Applications/Android/sdk
 	export CAPACITOR_ANDROID_STUDIO_PATH=/opt/android-studio/bin/studio.sh
 	export PATH=$PATH:$ANDROID_HOME/emulator
@@ -111,34 +107,28 @@ run_step "Exporting Android variables..." setup_android_sdk_paths
 
 # ===============================================================================
 
-setup_carapace () {
-	zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
-	source <(carapace _carapace)
+setup_path_variables () {
+	export PATH="$HOME/.local/bin:$PATH"
+	export PATH="$HOME/.cargo/bin:$PATH"
+
+	export PATH="$HOME/.opencode/bin:$PATH"
+	export PATH="$HOME/.surrealdb:$PATH"
+
+	export PNPM_HOME="$HOME/.local/share/pnpm"
+	case ":$PATH:" in
+		*":$PNPM_HOME:"*) ;;
+		*) export PATH="$PNPM_HOME:$PATH" ;;
+	esac
 }
 
-run_step "Sourcing carapace" setup_carapace
+run_step "Setting path variables..." setup_path_variables
 
 # ===============================================================================
 
-run_step "Sourcing ~/.local/bin/env" . "$HOME/.local/bin/env"
-
-# ===============================================================================
-
-# (($debug > 0)) && pretty_print space_hr && pretty_print success 'All set!'
 if [[ $debug -gt 0 ]]; then 
 	pretty_print space_hr
 	pretty_print success "All set!"
 else
 	fastfetch -l small
 fi;
-# . "$HOME/.local/bin/env"
 
-
-# # bun completions
-# [ -s "/home/lm/.bun/_bun" ] && source "/home/lm/.bun/_bun"
-
-# # bun
-# export BUN_INSTALL="$HOME/.bun"
-# export PATH="$BUN_INSTALL/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"

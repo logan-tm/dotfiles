@@ -432,7 +432,6 @@ install_yay() {
 }
 
 
-
 install_dotfiles
 create_env_file
 # setup_vim
